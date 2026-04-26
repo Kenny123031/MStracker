@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">MStracker</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_add">Add</string>
+    <string name="nav_stats">Stats</string>
+
+    <!-- UI Labels -->
+    <string name="label_my_library">My Library</string>
+    <string name="label_overview">Overview</string>
+    <string name="label_your_stats">Your Stats</string>
+    <string name="label_total_watched">Total Watched</string>
+    <string name="label_breakdown">Breakdown</string>
+    <string name="label_avg_rating">Average Rating</string>
+    <string name="label_movies">Movies</string>
+    <string name="label_series">Series</string>
+    <string name="label_all">All</string>
+    <string name="label_title">Title</string>
+    <string name="label_type">Type</string>
+    <string name="label_status">Status</string>
+    <string name="label_rating">Rating</string>
+    <string name="label_add_to_library">Add to Library</string>
+    <string name="label_save">Save to Library</string>
+
+</resources>

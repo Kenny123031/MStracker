@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0A0A0F">
+
+    <!-- Ring 1 (outermost, starts biggest) -->
+    <View
+        android:id="@+id/ring1"
+        android:layout_width="@dimen/splash_ring_size"
+        android:layout_height="@dimen/splash_ring_size"
+        android:background="@drawable/ring_circle"
+        android:alpha="0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <!-- Ring 2 -->
+    <View
+        android:id="@+id/ring2"
+        android:layout_width="@dimen/splash_ring_size"
+        android:layout_height="@dimen/splash_ring_size"
+        android:background="@drawable/ring_circle"
+        android:alpha="0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+         />
+
+    <!-- Ring 3 -->
+    <View
+        android:id="@+id/ring3"
+        android:layout_width="@dimen/splash_ring_size"
+        android:layout_height="@dimen/splash_ring_size"
+        android:background="@drawable/ring_circle"
+        android:alpha="0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+         />
+
+    <!-- Logo icon (gold rounded square with play icon inside) -->
+    <ImageView
+        android:id="@+id/logoIcon"
+        android:layout_width="@dimen/splash_logo_size"
+        android:layout_height="@dimen/splash_logo_size"
+        android:src="@drawable/ic_play_logo"
+        android:background="@drawable/logo_bg"
+        android:padding="@dimen/splash_logo_padding"
+        android:scaleX="0"
+        android:scaleY="0"
+        android:alpha="0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+         />
+
+    <!-- App name -->
+    <TextView
+        android:id="@+id/appTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="WatchTracker"
+        android:textColor="#F0F0F8"
+        android:textSize="@dimen/splash_title_size"
+        android:textStyle="bold"
+        android:letterSpacing="-0.02"
+        android:alpha="0"
+        android:translationY="@dimen/splash_translation_y"
+        app:layout_constraintTop_toBottomOf="@id/logoIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/splash_title_margin_top" />
+
+    <!-- Subtitle -->
+    <TextView
+        android:id="@+id/appSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="YOUR VIEWING HISTORY"
+        android:textColor="#8888AA"
+        android:textSize="@dimen/splash_subtitle_size"
+        android:letterSpacing="0.14"
+        android:alpha="0"
+        android:translationY="@dimen/splash_translation_y"
+        app:layout_constraintTop_toBottomOf="@id/appTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/splash_subtitle_margin_top" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

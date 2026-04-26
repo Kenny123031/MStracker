@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg">#0A0A0F</color>
+    <color name="surface">#13131A</color>
+    <color name="card">#1C1C26</color>
+    <color name="elevated">#242433</color>
+    <color name="accent">#E8C547</color>
+    <color name="accent_dim">#22E8C547</color>
+    <color name="red">#E85447</color>
+    <color name="green">#47E8A0</color>
+    <color name="blue">#4791E8</color>
+    <color name="text">#F0F0F8</color>
+    <color name="text_sub">#8888AA</color>
+    <color name="text_muted">#44445A</color>
+    <color name="border">#2A2A3A</color>
+
+    <!-- Aliases for UserProfile and MovieDetail -->
+    <color name="bg_primary">#0A0A0F</color>
+    <color name="bg_surface">#13131A</color>
+    <color name="bg_card">#1C1C26</color>
+    <color name="gold">#E8C547</color>
+    <color name="gold_dim">#33E8C547</color>
+    <color name="text_primary">#F0F0F8</color>
+    <color name="text_secondary">#8888AA</color>
+    <color name="blue_status">#4791E8</color>
+    <color name="green_status">#47E8A0</color>
+
+    <!-- Standard colors -->
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+</resources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Splash Screen - Larger for tablets -->
+    <dimen name="splash_ring_size">150dp</dimen>
+    <dimen name="splash_logo_size">120dp</dimen>
+    <dimen name="splash_logo_padding">24dp</dimen>
+    <dimen name="splash_title_size">40sp</dimen>
+    <dimen name="splash_subtitle_size">16sp</dimen>
+    <dimen name="splash_title_margin_top">32dp</dimen>
+    <dimen name="splash_subtitle_margin_top">8dp</dimen>
+    <dimen name="splash_translation_y">24dp</dimen>
+
+    <!-- Main Activity -->
+    <dimen name="main_text_size">48sp</dimen>
+
+    <!-- General -->
+    <dimen name="menu_text_size">54sp</dimen>
+</resources>

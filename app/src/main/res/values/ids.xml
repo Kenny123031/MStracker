@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="ring1" type="id" />
+    <item name="ring2" type="id" />
+    <item name="ring3" type="id" />
+    <item name="logoIcon" type="id" />
+    <item name="appTitle" type="id" />
+    <item name="appSubtitle" type="id" />
+</resources>
