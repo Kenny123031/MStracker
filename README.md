@@ -1,6 +1,12 @@
 # MStracker 🎬
 
-MStracker is a modern, responsive Android application designed for movie and TV series enthusiasts. It allows users to search the global TMDB database, track their progress, and manage a personal library with local data persistence.
+so yeah… this started because i kept forgetting what i’ve already watched 😅
+like, i’d open netflix or whatever and think 
+
+**“wait… did i already finish this?”**
+
+or worse — i’d rewatch something halfway before realizing 💀
+so instead of continuing that chaos, i built mstracker.
 
 ## ✨ Features
 
@@ -14,21 +20,9 @@ MStracker is a modern, responsive Android application designed for movie and TV 
 ## 🛠️ Tech Stack
 
 - **Language:** Java (Android)
-- **Networking:** Retrofit 2 & GSON
 - **Database:** Room Persistence Library
 - **Image Loading:** Glide 4
 - **UI Components:** Material Design, ConstraintLayout, CardView, Custom Drawables
-
-## ⚙️ Setup Instructions
-
-1.  **Clone the repo:**
-    ```bash
-    git clone https://github.com/YOUR_USERNAME/MStracker.git
-    ```
-2.  **Add API Key:**
-    The app uses TMDB. The `API_KEY` is located in the source code. For production, consider moving this to `local.properties`.
-3.  **Build:**
-    Open the project in **Android Studio** and sync Gradle.
 
 ## 📝 License
 This project is for educational purposes. Movie data provided by [TheMovieDB](https://www.themoviedb.org/).
