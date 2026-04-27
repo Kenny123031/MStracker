@@ -4,109 +4,159 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="12dp">
+    android:layout_marginBottom="16dp"
+    android:background="@drawable/item_background_gradient">
 
-    <!-- Poster Container without shadow/elevation -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/posterContainer"
-        android:layout_width="60dp"
-        android:layout_height="84dp"
-        android:layout_marginStart="0dp"
-        app:cardBackgroundColor="@android:color/transparent"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="0dp"
+    <!-- Background Number - Centered Watermark -->
+    <TextView
+        android:id="@+id/tvOrderNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:alpha="0.08"
+        android:fontFamily="sans-serif-black"
+        android:includeFontPadding="false"
+        android:textColor="@color/white"
+        android:textSize="100sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="01" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/posterImage"
+        android:layout_width="100dp"
+        android:layout_height="0dp"
+        android:background="@color/bg_surface"
+        android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="2:3"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/posterImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:background="@color/card"
-            app:shapeAppearanceOverlay="@style/RoundedImageView" />
-
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/RoundedImageView" />
 
     <TextView
         android:id="@+id/itemTitle"
-        style="@style/TitleText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ellipsize="end"
-        android:maxLines="1"
-        app:layout_constraintEnd_toStartOf="@+id/ratingLayout"
-        app:layout_constraintStart_toEndOf="@id/posterContainer"
-        app:layout_constraintTop_toTopOf="@id/posterContainer"
-        tools:text="Captain America" />
+        android:maxLines="2"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/btnMoreOptions"
+        app:layout_constraintStart_toEndOf="@id/posterImage"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Family Plan" />
 
-    <TextView
-        android:id="@+id/itemInfo"
-        style="@style/SubText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        app:layout_constraintStart_toStartOf="@id/itemTitle"
-        app:layout_constraintTop_toBottomOf="@id/itemTitle"
-        tools:text="Movie · 2011" />
+    <ImageView
+        android:id="@+id/btnMoreOptions"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="8dp"
+        android:padding="4dp"
+        android:src="@android:drawable/ic_menu_more"
+        android:contentDescription="More options"
+        app:layout_constraintBottom_toBottomOf="@id/itemTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/itemTitle"
+        app:tint="@color/text_primary" />
 
+    <!-- Status / Badge -->
     <TextView
         android:id="@+id/itemStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/pill_completed"
-        android:paddingHorizontal="14dp"
-        android:paddingVertical="5dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/pill_watching"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="4dp"
         android:textAllCaps="true"
-        android:textColor="@color/green"
+        android:textColor="@color/blue"
         android:textSize="10sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@id/itemTitle"
+        app:layout_constraintTop_toBottomOf="@id/itemTitle"
+        tools:text="WATCHING" />
+
+    <!-- Slidable Genres -->
+    <HorizontalScrollView
+        android:id="@+id/genreScroll"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/itemTitle"
+        app:layout_constraintTop_toBottomOf="@id/itemStatus">
+
+        <LinearLayout
+            android:id="@+id/genreContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingEnd="16dp">
+            <!-- Genre Chips will be added here -->
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/itemInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/itemTitle"
+        app:layout_constraintTop_toBottomOf="@id/genreScroll"
+        tools:text="2024 · South Korea · TV Series" />
+
+    <TextView
+        android:id="@+id/itemCreator"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/itemTitle"
         app:layout_constraintTop_toBottomOf="@id/itemInfo"
-        tools:text="COMPLETED" />
+        tools:text="Creator: Byron Keppel" />
 
     <LinearLayout
         android:id="@+id/ratingLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:gravity="center_vertical|end"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@id/itemInfo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/itemInfo">
+        app:layout_constraintStart_toStartOf="@id/itemTitle"
+        app:layout_constraintTop_toBottomOf="@id/itemCreator">
 
         <TextView
             android:id="@+id/itemStars"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:letterSpacing="0.1"
             android:text="★★★★★"
             android:textColor="@color/accent"
-            android:textSize="11sp" />
+            android:textSize="10sp" />
 
         <TextView
             android:id="@+id/itemRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="6dp"
             android:textColor="@color/text_sub"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textStyle="bold"
             tools:text="10.0" />
     </LinearLayout>
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="16dp"
-        android:background="@color/border"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/itemTitle"
-        app:layout_constraintTop_toBottomOf="@id/itemStatus" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

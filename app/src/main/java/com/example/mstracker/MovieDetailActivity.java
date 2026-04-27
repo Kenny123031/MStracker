@@ -80,6 +80,10 @@ public class MovieDetailActivity extends AppCompatActivity {
     // ── State ────────────────────────────────────────────────
     private boolean isFavourited = false;
     private String  movieTitle   = "";
+    private String  movieCountry = "Unknown";
+    private String  movieCreator = "Unknown";
+    private String  movieYear    = "—";
+    private String  moviePosterPath = "";
     private WatchItem existingItem = null;
 
     @Override
@@ -122,6 +126,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         spinnerStatus = findViewById(R.id.spinnerStatus);
         ratingBar = findViewById(R.id.ratingBar);
 
+        btnAddToLibrary.setEnabled(false); // Disable until details are fetched
         setupStatusSpinner();
     }
 
@@ -276,6 +281,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 public void onResponse(Call<MovieDetailsResponse> call, Response<MovieDetailsResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         populateMovieDetails(response.body());
+                        fetchMovieCredits(tmdbId);
                     }
                 }
                 @Override
@@ -299,8 +305,46 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
     }
 
+    private void fetchMovieCredits(int movieId) {
+        TMDBService service = RetrofitClient.getClient().create(TMDBService.class);
+        service.getMovieCredits(movieId, API_KEY).enqueue(new Callback<com.example.mstracker.model.CreditsResponse>() {
+            @Override
+            public void onResponse(Call<com.example.mstracker.model.CreditsResponse> call, Response<com.example.mstracker.model.CreditsResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    for (com.example.mstracker.model.CreditsResponse.Crew crew : response.body().getCrew()) {
+                        if ("Director".equalsIgnoreCase(crew.getJob())) {
+                            movieCreator = crew.getName();
+                            tvDirectorYear.setText(movieCreator + "  ·  " + movieYear);
+                            break;
+                        }
+                    }
+                }
+                btnAddToLibrary.setEnabled(true);
+            }
+            @Override
+            public void onFailure(Call<com.example.mstracker.model.CreditsResponse> call, Throwable t) {}
+        });
+    }
+
+    private String shortenCountry(String country) {
+        if (country == null) return "Unknown";
+        switch (country) {
+            case "United States of America":
+                return "America";
+            case "South Korea":
+                return "Korea";
+            case "United Kingdom":
+                return "UK";
+            case "Philippines":
+                return "Philippines";
+            default:
+                return country;
+        }
+    }
+
     private void populateMovieDetails(MovieDetailsResponse movie) {
         movieTitle = movie.getTitle();
+        moviePosterPath = movie.getPosterPath();
         tvMovieTitle.setText(movie.getTitle());
         tvDescription.setText(movie.getOverview());
         tvReleaseDate.setText(formatDate(movie.getReleaseDate()));
@@ -310,9 +354,13 @@ public class MovieDetailActivity extends AppCompatActivity {
         tvLanguage.setText(movie.getOriginalLanguage().toUpperCase());
         tvTypeBadge.setText("MOVIE");
         
-        String year = movie.getReleaseDate() != null && movie.getReleaseDate().length() >= 4 ? 
+        if (movie.getProductionCountries() != null && !movie.getProductionCountries().isEmpty()) {
+            movieCountry = shortenCountry(movie.getProductionCountries().get(0).getName());
+        }
+
+        movieYear = movie.getReleaseDate() != null && movie.getReleaseDate().length() >= 4 ? 
                 movie.getReleaseDate().substring(0, 4) : "—";
-        tvDirectorYear.setText("Movie  ·  " + year);
+        tvDirectorYear.setText("Movie  ·  " + movieYear);
 
         if (movie.getPosterPath() != null) {
             String fullPosterUrl = "https://image.tmdb.org/t/p/w500" + movie.getPosterPath();
@@ -329,11 +377,17 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     private void populateTVDetails(TVDetailsResponse tv) {
+        btnAddToLibrary.setEnabled(true);
         movieTitle = tv.getName();
+        moviePosterPath = tv.getPosterPath();
         tvMovieTitle.setText(tv.getName());
         tvDescription.setText(tv.getOverview());
         tvReleaseDate.setText(formatDate(tv.getFirstAirDate()));
         
+        if (tv.getProductionCountries() != null && !tv.getProductionCountries().isEmpty()) {
+            movieCountry = tv.getProductionCountries().get(0).getName();
+        }
+
         String runtimeStr;
         if (tv.getEpisodeRunTime() != null && !tv.getEpisodeRunTime().isEmpty()) {
             runtimeStr = tv.getEpisodeRunTime().get(0) + " min";
@@ -349,14 +403,19 @@ public class MovieDetailActivity extends AppCompatActivity {
         tvLanguage.setText(tv.getOriginalLanguage().toUpperCase());
         tvTypeBadge.setText("SERIES");
 
-        String year = tv.getFirstAirDate() != null && tv.getFirstAirDate().length() >= 4 ? 
+        if (tv.getProductionCountries() != null && !tv.getProductionCountries().isEmpty()) {
+            movieCountry = shortenCountry(tv.getProductionCountries().get(0).getName());
+        }
+
+        movieYear = tv.getFirstAirDate() != null && tv.getFirstAirDate().length() >= 4 ? 
                 tv.getFirstAirDate().substring(0, 4) : "—";
         
         String creators = "Unknown";
         if (tv.getCreatedBy() != null && !tv.getCreatedBy().isEmpty()) {
             creators = tv.getCreatedBy().get(0).getName();
+            movieCreator = creators;
         }
-        tvDirectorYear.setText(creators + "  ·  " + year);
+        tvDirectorYear.setText(creators + "  ·  " + movieYear);
 
         if (tv.getPosterPath() != null) {
             String fullPosterUrl = "https://image.tmdb.org/t/p/w500" + tv.getPosterPath();
@@ -400,12 +459,14 @@ public class MovieDetailActivity extends AppCompatActivity {
                 formattedType,
                 "Plan to Watch",
                 0.0f,
-                getIntent().getStringExtra(EXTRA_POSTER_PATH),
-                getIntent().getStringExtra(EXTRA_YEAR)
+                moviePosterPath,
+                movieYear
             );
             newItem.setTmdbId(getIntent().getIntExtra(EXTRA_TMDB_ID, -1));
             newItem.setTmdbType(getIntent().getStringExtra(EXTRA_TMDB_TYPE));
             newItem.setGenre(tvGenres.getText().toString()); // Save genres
+            newItem.setCountry(movieCountry);
+            newItem.setCreator(movieCreator);
 
             Executors.newSingleThreadExecutor().execute(() -> {
                 AppDatabase.getInstance(this).watchDao().insert(newItem);

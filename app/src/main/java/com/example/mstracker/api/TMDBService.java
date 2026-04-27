@@ -1,5 +1,6 @@
 package com.example.mstracker.api;
 
+import com.example.mstracker.model.CreditsResponse;
 import com.example.mstracker.model.MovieDetailsResponse;
 import com.example.mstracker.model.TMDBResponse;
 import com.example.mstracker.model.TVDetailsResponse;
@@ -17,6 +18,12 @@ public interface TMDBService {
 
     @GET("movie/{movie_id}")
     Call<MovieDetailsResponse> getMovieDetails(
+        @Path("movie_id") int movieId,
+        @Query("api_key") String apiKey
+    );
+
+    @GET("movie/{movie_id}/credits")
+    Call<CreditsResponse> getMovieCredits(
         @Path("movie_id") int movieId,
         @Query("api_key") String apiKey
     );

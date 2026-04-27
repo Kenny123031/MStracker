@@ -35,7 +35,7 @@ import java.util.concurrent.Executors;
 public class UserProfileActivity extends AppCompatActivity {
 
     private ImageView ivAvatar;
-    private TextView tvUsername, tvHandle;
+    private TextView tvUsername, tvHandle, tvEmptyGenres;
     private RecyclerView rvTopPicks;
     private ChipGroup chipGroupGenres;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -64,6 +64,7 @@ public class UserProfileActivity extends AppCompatActivity {
         ivAvatar = findViewById(R.id.ivAvatar);
         tvUsername = findViewById(R.id.tvUsername);
         tvHandle = findViewById(R.id.tvHandle);
+        tvEmptyGenres = findViewById(R.id.tvEmptyGenres);
         rvTopPicks = findViewById(R.id.rvTopPicks);
         chipGroupGenres = findViewById(R.id.chipGroupGenres);
 
@@ -79,6 +80,39 @@ public class UserProfileActivity extends AppCompatActivity {
                         Glide.with(this).load(uri).centerCrop().into(ivAvatar);
                     }
                 });
+    }
+
+    private List<String> getTopGenres(List<WatchItem> items) {
+        if (items.isEmpty()) return new ArrayList<>();
+
+        Map<String, Integer> counts = new HashMap<>();
+        for (WatchItem item : items) {
+            String genreStr = item.getGenre();
+            if (genreStr != null && !genreStr.isEmpty()) {
+                // Split genres and count EACH one individually (solo)
+                String[] genres = genreStr.split(",\\s*");
+                for (String g : genres) {
+                    String genre = g.trim();
+                    if (!genre.isEmpty() && !genre.equals("—")) {
+                        counts.put(genre, counts.getOrDefault(genre, 0) + 1);
+                    }
+                }
+            }
+        }
+
+        // Sort by frequency (highest count first)
+        List<String> sortedGenres = new ArrayList<>(counts.keySet());
+        sortedGenres.sort((a, b) -> {
+            int countA = counts.getOrDefault(a, 0);
+            int countB = counts.getOrDefault(b, 0);
+            if (countA == countB) {
+                return a.compareTo(b); // Alphabetical tie-breaker
+            }
+            return Integer.compare(countB, countA);
+        });
+
+        // Return up to top 5 genres
+        return sortedGenres.subList(0, Math.min(5, sortedGenres.size()));
     }
 
     private void loadProfileImage() {
@@ -99,8 +133,8 @@ public class UserProfileActivity extends AppCompatActivity {
             List<String> topGenres = getTopGenres(allItems);
 
             runOnUiThread(() -> {
-                tvUsername.setText("Twin");
-                tvHandle.setText("@twin · member since 2024");
+                tvUsername.setText("AnderDingus");
+                tvHandle.setText("@AnderDingus67 · member since 2024");
 
                 if (topPicks.isEmpty()) {
                     findViewById(R.id.labelTopPicks).setVisibility(View.GONE);
@@ -114,32 +148,18 @@ public class UserProfileActivity extends AppCompatActivity {
         });
     }
 
-    private List<String> getTopGenres(List<WatchItem> items) {
-        if (items.isEmpty()) {
-            return Arrays.asList("Action", "Sci-Fi", "Drama");
-        }
-        Map<String, Integer> counts = new HashMap<>();
-        for (WatchItem item : items) {
-            if (item.getGenre() != null) {
-                String[] genres = item.getGenre().split(", ");
-                for (String g : genres) {
-                    counts.put(g, counts.getOrDefault(g, 0) + 1);
-                }
-            }
-        }
-        List<String> sortedGenres = new ArrayList<>(counts.keySet());
-        sortedGenres.sort((a, b) -> {
-            Integer valB = counts.get(b);
-            Integer valA = counts.get(a);
-            return (valB != null ? valB : 0) - (valA != null ? valA : 0);
-        });
-        
-        if (sortedGenres.isEmpty()) return Arrays.asList("Movies", "Series", "Tracker");
-        return sortedGenres.subList(0, Math.min(5, sortedGenres.size()));
-    }
-
     private void updateGenreChips(List<String> genres) {
         chipGroupGenres.removeAllViews();
+        
+        if (genres.isEmpty()) {
+            tvEmptyGenres.setVisibility(View.VISIBLE);
+            chipGroupGenres.setVisibility(View.GONE);
+            return;
+        }
+
+        tvEmptyGenres.setVisibility(View.GONE);
+        chipGroupGenres.setVisibility(View.VISIBLE);
+
         for (String genre : genres) {
             Chip chip = new Chip(this);
             chip.setText(genre);
@@ -156,13 +176,13 @@ public class UserProfileActivity extends AppCompatActivity {
         ivAvatar.setOnClickListener(v -> getContent.launch("image/*"));
         
         findViewById(R.id.btnEditProfile).setOnClickListener(v -> 
-                Toast.makeText(this, "Edit profile coming soon", Toast.LENGTH_SHORT).show());
+                Toast.makeText(this, "wala pa di ko alam", Toast.LENGTH_SHORT).show());
                 
         findViewById(R.id.settingDarkMode).setOnClickListener(v -> 
-                Toast.makeText(this, "Theme settings coming soon", Toast.LENGTH_SHORT).show());
+                Toast.makeText(this, "dark mode only kunyare", Toast.LENGTH_SHORT).show());
                 
         findViewById(R.id.settingBackup).setOnClickListener(v -> 
-                Toast.makeText(this, "Data backup coming soon", Toast.LENGTH_SHORT).show());
+                Toast.makeText(this, "tinatamad mag lagay database", Toast.LENGTH_SHORT).show());
     }
 
     @Override

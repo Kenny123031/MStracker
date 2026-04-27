@@ -93,6 +93,19 @@
                 android:textColor="@color/text_sub"
                 android:textSize="@dimen/text_caption"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/filterPlan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/pill_background"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="5dp"
+                android:text="Plan"
+                android:textColor="@color/text_sub"
+                android:textSize="@dimen/text_caption"
+                android:textStyle="bold" />
         </LinearLayout>
 
     </LinearLayout>
@@ -102,7 +115,7 @@
         android:id="@+id/recyclerViewHome"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:paddingHorizontal="@dimen/margin_default"
+        android:paddingStart="14dp"
         android:clipToPadding="false"
         android:paddingBottom="80dp"
         app:layout_constraintWidth_max="800dp"

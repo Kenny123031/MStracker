@@ -11,14 +11,23 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.example.mstracker.api.RetrofitClient;
+import com.example.mstracker.api.TMDBService;
 import com.example.mstracker.database.AppDatabase;
+import com.example.mstracker.model.CreditsResponse;
+import com.example.mstracker.model.MovieDetailsResponse;
 import com.example.mstracker.model.TMDBResponse;
+import com.example.mstracker.model.TVDetailsResponse;
 import com.example.mstracker.model.WatchItem;
 import java.util.List;
 import java.util.concurrent.Executors;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
     private List<TMDBResponse.Movie> movies;
+    private static final String API_KEY = "0a0e2bf9fe54e6e65320d51734e258a4";
 
     public MovieAdapter(List<TMDBResponse.Movie> movies) {
         this.movies = movies;
@@ -73,27 +82,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             String type = movie.getMediaType() != null ? 
                 (movie.getMediaType().equalsIgnoreCase("tv") ? "Series" : "Movie") : "Movie";
             
-            WatchItem newItem = new WatchItem(
-                movie.getTitle(),
-                type,
-                "Plan to Watch",
-                0.0f,
-                movie.getPosterPath(),
-                movie.getReleaseDate() != null && movie.getReleaseDate().length() >= 4 ? 
-                    movie.getReleaseDate().substring(0, 4) : "—"
-            );
-            newItem.setTmdbId(movie.getId());
-            newItem.setTmdbType(tmdbType);
-
-            Executors.newSingleThreadExecutor().execute(() -> {
-                AppDatabase.getInstance(context).watchDao().insert(newItem);
-                if (context instanceof android.app.Activity) {
-                    ((android.app.Activity) context).runOnUiThread(() -> {
-                        Toast.makeText(context, "\"" + movie.getTitle() + "\" added to library!", Toast.LENGTH_SHORT).show();
-                        notifyItemChanged(position);
-                    });
-                }
-            });
+            fetchDetailsAndSave(movie, type, tmdbType, context, holder.getAdapterPosition());
         });
 
         holder.removeBtn.setOnClickListener(v -> {
@@ -104,7 +93,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                     if (context instanceof android.app.Activity) {
                         ((android.app.Activity) context).runOnUiThread(() -> {
                             Toast.makeText(context, "\"" + movie.getTitle() + "\" removed from library", Toast.LENGTH_SHORT).show();
-                            notifyItemChanged(position);
+                            notifyItemChanged(holder.getAdapterPosition());
                         });
                     }
                 }
@@ -125,6 +114,103 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             intent.putExtra(MovieDetailActivity.EXTRA_TMDB_TYPE, tmdbType);
             intent.putExtra(MovieDetailActivity.EXTRA_SCORE, String.valueOf(movie.getVoteAverage())); 
             context.startActivity(intent);
+        });
+    }
+
+    private void fetchDetailsAndSave(TMDBResponse.Movie movie, String type, String tmdbType, Context context, int position) {
+        TMDBService service = RetrofitClient.getClient().create(TMDBService.class);
+        if ("movie".equalsIgnoreCase(tmdbType)) {
+            service.getMovieDetails(movie.getId(), API_KEY).enqueue(new Callback<MovieDetailsResponse>() {
+                @Override
+                public void onResponse(Call<MovieDetailsResponse> call, Response<MovieDetailsResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        MovieDetailsResponse details = response.body();
+                        String country = "Unknown";
+                        if (details.getProductionCountries() != null && !details.getProductionCountries().isEmpty()) {
+                            country = shortenCountry(details.getProductionCountries().get(0).getName());
+                        }
+                        final String finalCountry = country;
+
+                        service.getMovieCredits(movie.getId(), API_KEY).enqueue(new Callback<CreditsResponse>() {
+                            @Override
+                            public void onResponse(Call<CreditsResponse> call, Response<CreditsResponse> response) {
+                                String director = "Unknown";
+                                if (response.isSuccessful() && response.body() != null) {
+                                    for (CreditsResponse.Crew crew : response.body().getCrew()) {
+                                        if ("Director".equalsIgnoreCase(crew.getJob())) {
+                                            director = crew.getName();
+                                            break;
+                                        }
+                                    }
+                                }
+                                saveToLibrary(movie, type, tmdbType, finalCountry, director, context, position);
+                            }
+                            @Override
+                            public void onFailure(Call<CreditsResponse> call, Throwable t) {
+                                saveToLibrary(movie, type, tmdbType, finalCountry, "Unknown", context, position);
+                            }
+                        });
+                    }
+                }
+                @Override
+                public void onFailure(Call<MovieDetailsResponse> call, Throwable t) {}
+            });
+        } else {
+            service.getTVDetails(movie.getId(), API_KEY).enqueue(new Callback<TVDetailsResponse>() {
+                @Override
+                public void onResponse(Call<TVDetailsResponse> call, Response<TVDetailsResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        TVDetailsResponse details = response.body();
+                        String country = "Unknown";
+                        if (details.getProductionCountries() != null && !details.getProductionCountries().isEmpty()) {
+                            country = shortenCountry(details.getProductionCountries().get(0).getName());
+                        }
+                        String creator = "Unknown";
+                        if (details.getCreatedBy() != null && !details.getCreatedBy().isEmpty()) {
+                            creator = details.getCreatedBy().get(0).getName();
+                        }
+                        saveToLibrary(movie, type, tmdbType, country, creator, context, position);
+                    }
+                }
+                @Override
+                public void onFailure(Call<TVDetailsResponse> call, Throwable t) {}
+            });
+        }
+    }
+
+    private String shortenCountry(String country) {
+        if (country == null) return "Unknown";
+        switch (country) {
+            case "United States of America": return "America";
+            case "South Korea": return "Korea";
+            case "United Kingdom": return "UK";
+            default: return country;
+        }
+    }
+
+    private void saveToLibrary(TMDBResponse.Movie movie, String type, String tmdbType, String country, String creator, Context context, int position) {
+        WatchItem newItem = new WatchItem(
+            movie.getTitle(),
+            type,
+            "Plan to Watch",
+            0.0f,
+            movie.getPosterPath(),
+            movie.getReleaseDate() != null && movie.getReleaseDate().length() >= 4 ? 
+                movie.getReleaseDate().substring(0, 4) : "—"
+        );
+        newItem.setTmdbId(movie.getId());
+        newItem.setTmdbType(tmdbType);
+        newItem.setCountry(country);
+        newItem.setCreator(creator);
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            AppDatabase.getInstance(context).watchDao().insert(newItem);
+            if (context instanceof android.app.Activity) {
+                ((android.app.Activity) context).runOnUiThread(() -> {
+                    Toast.makeText(context, "\"" + movie.getTitle() + "\" added to library!", Toast.LENGTH_SHORT).show();
+                    notifyItemChanged(position);
+                });
+            }
         });
     }
 

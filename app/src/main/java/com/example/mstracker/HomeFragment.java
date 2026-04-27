@@ -28,7 +28,7 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private WatchAdapter adapter;
-    private TextView filterAll, filterMovies, filterSeries;
+    private TextView filterAll, filterMovies, filterSeries, filterPlan;
     private ImageView profileImage;
     private AppDatabase db;
     private String currentFilter = "All";
@@ -45,6 +45,7 @@ public class HomeFragment extends Fragment {
         filterAll = view.findViewById(R.id.filterAll);
         filterMovies = view.findViewById(R.id.filterMovies);
         filterSeries = view.findViewById(R.id.filterSeries);
+        filterPlan = view.findViewById(R.id.filterPlan);
         profileImage = view.findViewById(R.id.profileImage);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -54,6 +55,7 @@ public class HomeFragment extends Fragment {
         filterAll.setOnClickListener(v -> updateFilter("All"));
         filterMovies.setOnClickListener(v -> updateFilter("Movie"));
         filterSeries.setOnClickListener(v -> updateFilter("Series"));
+        filterPlan.setOnClickListener(v -> updateFilter("Plan to Watch"));
 
         profileImage.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), UserProfileActivity.class);
@@ -89,6 +91,9 @@ public class HomeFragment extends Fragment {
         filterSeries.setBackgroundResource(filter.equals("Series") ? R.drawable.pill_background_selected : R.drawable.pill_background);
         filterSeries.setTextColor(ContextCompat.getColor(getContext(), filter.equals("Series") ? R.color.bg : R.color.text_sub));
 
+        filterPlan.setBackgroundResource(filter.equals("Plan to Watch") ? R.drawable.pill_background_selected : R.drawable.pill_background);
+        filterPlan.setTextColor(ContextCompat.getColor(getContext(), filter.equals("Plan to Watch") ? R.color.bg : R.color.text_sub));
+
         loadData();
     }
 
@@ -97,6 +102,8 @@ public class HomeFragment extends Fragment {
             List<WatchItem> items;
             if (currentFilter.equals("All")) {
                 items = db.watchDao().getAll();
+            } else if (currentFilter.equals("Plan to Watch")) {
+                items = db.watchDao().getByStatus("Plan to Watch");
             } else {
                 items = db.watchDao().getByType(currentFilter);
             }

@@ -6,7 +6,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import com.example.mstracker.model.WatchItem;
 
-@Database(entities = {WatchItem.class}, version = 5)
+@Database(entities = {WatchItem.class}, version = 6)
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase instance;
 

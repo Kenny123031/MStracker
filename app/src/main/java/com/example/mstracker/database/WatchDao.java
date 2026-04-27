@@ -21,6 +21,9 @@ public interface WatchDao {
     @Query("SELECT * FROM watch_items WHERE status = 'Watching' ORDER BY addedTimestamp DESC")
     List<WatchItem> getCurrentlyWatching();
 
+    @Query("SELECT * FROM watch_items WHERE status = :status ORDER BY addedTimestamp DESC")
+    List<WatchItem> getByStatus(String status);
+
     @Query("SELECT * FROM watch_items WHERE rating >= 4.0 ORDER BY rating DESC, addedTimestamp DESC LIMIT 5")
     List<WatchItem> getTopPicks();
 

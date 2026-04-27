@@ -26,6 +26,8 @@ public class TVDetailsResponse {
     private int numberOfEpisodes;
     @SerializedName("genres")
     private List<Genre> genres;
+    @SerializedName("production_countries")
+    private List<Country> productionCountries;
 
     public static class Creator {
         @SerializedName("name")
@@ -34,6 +36,12 @@ public class TVDetailsResponse {
     }
 
     public static class Genre {
+        @SerializedName("name")
+        private String name;
+        public String getName() { return name; }
+    }
+
+    public static class Country {
         @SerializedName("name")
         private String name;
         public String getName() { return name; }
@@ -50,4 +58,5 @@ public class TVDetailsResponse {
     public List<Creator> getCreatedBy() { return createdBy; }
     public int getNumberOfEpisodes() { return numberOfEpisodes; }
     public List<Genre> getGenres() { return genres; }
+    public List<Country> getProductionCountries() { return productionCountries; }
 }

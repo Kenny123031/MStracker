@@ -15,6 +15,8 @@ public class WatchItem {
     private String posterPath;
     private String year;
     private String genre;
+    private String country;
+    private String creator;
     private long addedTimestamp;
     private long completedDate;
     private int tmdbId;
@@ -47,6 +49,10 @@ public class WatchItem {
     public void setYear(String year) { this.year = year; }
     public String getGenre() { return genre; }
     public void setGenre(String genre) { this.genre = genre; }
+    public String getCountry() { return country; }
+    public void setCountry(String country) { this.country = country; }
+    public String getCreator() { return creator; }
+    public void setCreator(String creator) { this.creator = creator; }
     public long getAddedTimestamp() { return addedTimestamp; }
     public void setAddedTimestamp(long addedTimestamp) { this.addedTimestamp = addedTimestamp; }
 

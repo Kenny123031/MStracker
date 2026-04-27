@@ -22,8 +22,16 @@ public class MovieDetailsResponse {
     private String originalLanguage;
     @SerializedName("genres")
     private List<Genre> genres;
+    @SerializedName("production_countries")
+    private List<Country> productionCountries;
 
     public static class Genre {
+        @SerializedName("name")
+        private String name;
+        public String getName() { return name; }
+    }
+
+    public static class Country {
         @SerializedName("name")
         private String name;
         public String getName() { return name; }
@@ -38,4 +46,5 @@ public class MovieDetailsResponse {
     public String getPosterPath() { return posterPath; }
     public String getOriginalLanguage() { return originalLanguage; }
     public List<Genre> getGenres() { return genres; }
+    public List<Country> getProductionCountries() { return productionCountries; }
 }
