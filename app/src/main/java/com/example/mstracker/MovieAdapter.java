@@ -19,6 +19,7 @@ import com.example.mstracker.model.MovieDetailsResponse;
 import com.example.mstracker.model.TMDBResponse;
 import com.example.mstracker.model.TVDetailsResponse;
 import com.example.mstracker.model.WatchItem;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import retrofit2.Call;
@@ -92,7 +93,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                     AppDatabase.getInstance(context).watchDao().delete(existing);
                     if (context instanceof android.app.Activity) {
                         ((android.app.Activity) context).runOnUiThread(() -> {
-                            Toast.makeText(context, "\"" + movie.getTitle() + "\" removed from library", Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(context, "\"" + movie.getTitle() + "\" removed from library", Toast.LENGTH_SHORT).show();
                             notifyItemChanged(holder.getAdapterPosition());
                         });
                     }
@@ -131,6 +132,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                         }
                         final String finalCountry = country;
 
+                        // Parse Genres
+                        List<String> genreNames = new ArrayList<>();
+                        if (details.getGenres() != null) {
+                            for (MovieDetailsResponse.Genre g : details.getGenres()) {
+                                genreNames.add(g.getName());
+                            }
+                        }
+                        final String finalGenres = String.join(", ", genreNames);
+
                         service.getMovieCredits(movie.getId(), API_KEY).enqueue(new Callback<CreditsResponse>() {
                             @Override
                             public void onResponse(Call<CreditsResponse> call, Response<CreditsResponse> response) {
@@ -143,11 +153,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                                         }
                                     }
                                 }
-                                saveToLibrary(movie, type, tmdbType, finalCountry, director, context, position);
+                                saveToLibrary(movie, type, tmdbType, finalCountry, director, finalGenres, context, position);
                             }
                             @Override
                             public void onFailure(Call<CreditsResponse> call, Throwable t) {
-                                saveToLibrary(movie, type, tmdbType, finalCountry, "Unknown", context, position);
+                                saveToLibrary(movie, type, tmdbType, finalCountry, "Unknown", finalGenres, context, position);
                             }
                         });
                     }
@@ -169,7 +179,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                         if (details.getCreatedBy() != null && !details.getCreatedBy().isEmpty()) {
                             creator = details.getCreatedBy().get(0).getName();
                         }
-                        saveToLibrary(movie, type, tmdbType, country, creator, context, position);
+
+                        // Parse Genres
+                        List<String> genreNames = new ArrayList<>();
+                        if (details.getGenres() != null) {
+                            for (TVDetailsResponse.Genre g : details.getGenres()) {
+                                genreNames.add(g.getName());
+                            }
+                        }
+                        String genres = String.join(", ", genreNames);
+
+                        saveToLibrary(movie, type, tmdbType, country, creator, genres, context, position);
                     }
                 }
                 @Override
@@ -188,7 +208,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }
     }
 
-    private void saveToLibrary(TMDBResponse.Movie movie, String type, String tmdbType, String country, String creator, Context context, int position) {
+    private void saveToLibrary(TMDBResponse.Movie movie, String type, String tmdbType, String country, String creator, String genres, Context context, int position) {
         WatchItem newItem = new WatchItem(
             movie.getTitle(),
             type,
@@ -202,12 +222,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         newItem.setTmdbType(tmdbType);
         newItem.setCountry(country);
         newItem.setCreator(creator);
+        newItem.setGenre(genres);
 
         Executors.newSingleThreadExecutor().execute(() -> {
             AppDatabase.getInstance(context).watchDao().insert(newItem);
             if (context instanceof android.app.Activity) {
                 ((android.app.Activity) context).runOnUiThread(() -> {
-                    Toast.makeText(context, "\"" + movie.getTitle() + "\" added to library!", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(context, "\"" + movie.getTitle() + "\" added to library!", Toast.LENGTH_SHORT).show();
                     notifyItemChanged(position);
                 });
             }

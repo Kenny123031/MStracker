@@ -8,12 +8,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.example.mstracker.database.AppDatabase;
 import com.example.mstracker.model.WatchItem;
-import com.google.android.material.chip.Chip;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executors;
 
 public class WatchAdapter extends RecyclerView.Adapter<WatchAdapter.WatchViewHolder> {
     private List<WatchItem> items;
@@ -107,8 +109,28 @@ public class WatchAdapter extends RecyclerView.Adapter<WatchAdapter.WatchViewHol
         });
 
         holder.btnMore.setOnClickListener(v -> {
-            android.widget.Toast.makeText(holder.itemView.getContext(), "More options for " + item.getTitle(), android.widget.Toast.LENGTH_SHORT).show();
+            showDeleteDialog(holder.itemView.getContext(), item);
         });
+    }
+
+    private void showDeleteDialog(android.content.Context context, WatchItem item) {
+        new AlertDialog.Builder(context)
+                .setTitle("Remove Item")
+                .setMessage("Are you sure you want to remove \"" + item.getTitle() + "\" from your library?")
+                .setPositiveButton("Remove", (dialog, which) -> {
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        AppDatabase.getInstance(context).watchDao().delete(item);
+                        // No toast as per user request
+                        if (context instanceof android.app.Activity) {
+                            ((android.app.Activity) context).runOnUiThread(() -> {
+                                items.remove(item);
+                                notifyDataSetChanged();
+                            });
+                        }
+                    });
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     @Override

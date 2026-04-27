@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:alpha="0.08"
+        android:alpha="0.06"
         android:fontFamily="sans-serif-black"
         android:includeFontPadding="false"
         android:textColor="@color/white"
@@ -27,11 +27,11 @@
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/posterImage"
         android:layout_width="100dp"
-        android:layout_height="0dp"
+        android:layout_height="160dp"
         android:background="@color/bg_surface"
         android:scaleType="centerCrop"
-        app:layout_constraintDimensionRatio="2:3"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="2:3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/RoundedImageView" />
@@ -100,7 +100,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingEnd="16dp">
-            <!-- Genre Chips will be added here -->
+            <include layout="@layout/item_genre_chip" tools:visibility="visible" />
         </LinearLayout>
     </HorizontalScrollView>
 

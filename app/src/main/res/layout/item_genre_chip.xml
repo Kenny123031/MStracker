@@ -8,11 +8,11 @@
         android:id="@+id/tvGenreName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/pill_background"
-        android:backgroundTint="@color/bg_surface"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="4dp"
-        android:textColor="@color/text_primary"
-        android:textSize="12sp"
+        android:background="@drawable/pill_genre"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="3dp"
+        android:textColor="@color/text_secondary"
+        android:textSize="11sp"
         android:textStyle="bold" />
+
 </FrameLayout>
