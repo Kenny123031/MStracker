@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
+    android:minHeight="160dp"
     android:background="@drawable/item_background_gradient">
 
     <!-- Background Number - Centered Watermark -->
@@ -27,11 +28,10 @@
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/posterImage"
         android:layout_width="100dp"
-        android:layout_height="160dp"
+        android:layout_height="0dp"
         android:background="@color/bg_surface"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="2:3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/RoundedImageView" />
@@ -44,7 +44,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:maxLines="3"
         android:textColor="@color/text_primary"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -64,6 +64,7 @@
         app:layout_constraintBottom_toBottomOf="@id/itemTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/itemTitle"
+        app:layout_constraintVertical_bias="0.0"
         app:tint="@color/text_primary" />
 
     <!-- Status / Badge -->
@@ -135,10 +136,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:layout_marginBottom="12dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/itemTitle"
-        app:layout_constraintTop_toBottomOf="@id/itemCreator">
+        app:layout_constraintTop_toBottomOf="@id/itemCreator"
+        app:layout_constraintVertical_bias="0.0">
 
         <TextView
             android:id="@+id/itemStars"

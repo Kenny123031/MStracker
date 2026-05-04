@@ -471,7 +471,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             Executors.newSingleThreadExecutor().execute(() -> {
                 AppDatabase.getInstance(this).watchDao().insert(newItem);
                 runOnUiThread(() -> {
-                    Toast.makeText(this, "\"" + movieTitle + "\" added to your library!", Toast.LENGTH_SHORT).show();
+                    // Toast removed as per user request
                     checkIfAlreadyInLibrary(newItem.getTmdbId(), newItem.getTmdbType());
                 });
             });
@@ -485,7 +485,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 Executors.newSingleThreadExecutor().execute(() -> {
                     AppDatabase.getInstance(this).watchDao().delete(existingItem);
                     runOnUiThread(() -> {
-                        Toast.makeText(this, "\"" + movieTitle + "\" removed from library", Toast.LENGTH_SHORT).show();
+                        // Toast removed as per user request
                         checkIfAlreadyInLibrary(id, type);
                     });
                 });
@@ -500,12 +500,10 @@ public class MovieDetailActivity extends AppCompatActivity {
                 // Filled heart — tint gold
                 btnFavourite.setColorFilter(
                         getResources().getColor(R.color.gold, getTheme()));
-                Toast.makeText(this, "Added to favourites", Toast.LENGTH_SHORT).show();
             } else {
                 // Outline heart — tint grey
                 btnFavourite.setColorFilter(
                         getResources().getColor(R.color.text_muted, getTheme()));
-                Toast.makeText(this, "Removed from favourites", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -515,6 +513,36 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     // ── More options bottom sheet / popup ────────────────────
     private void showMoreOptions() {
-        Toast.makeText(this, "More options coming soon", Toast.LENGTH_SHORT).show();
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_more_options, null);
+        androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        dialogView.findViewById(R.id.btnRemoveOption).setOnClickListener(v -> {
+            dialog.dismiss();
+            if (existingItem != null) {
+                showDeleteConfirmDialog();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showDeleteConfirmDialog() {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Remove Item")
+                .setMessage("Are you sure you want to remove \"" + movieTitle + "\" from your library?")
+                .setPositiveButton("Remove", (dialog, which) -> {
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        AppDatabase.getInstance(this).watchDao().delete(existingItem);
+                        runOnUiThread(() -> checkIfAlreadyInLibrary(existingItem.getTmdbId(), existingItem.getTmdbType()));
+                    });
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 }

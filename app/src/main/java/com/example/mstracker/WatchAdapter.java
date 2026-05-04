@@ -109,11 +109,29 @@ public class WatchAdapter extends RecyclerView.Adapter<WatchAdapter.WatchViewHol
         });
 
         holder.btnMore.setOnClickListener(v -> {
-            showDeleteDialog(holder.itemView.getContext(), item);
+            showMoreOptionsDialog(holder.itemView.getContext(), item);
         });
     }
 
-    private void showDeleteDialog(android.content.Context context, WatchItem item) {
+    private void showMoreOptionsDialog(android.content.Context context, WatchItem item) {
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_more_options, null);
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setView(dialogView)
+                .create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        dialogView.findViewById(R.id.btnRemoveOption).setOnClickListener(v -> {
+            dialog.dismiss();
+            showDeleteConfirmDialog(context, item);
+        });
+
+        dialog.show();
+    }
+
+    private void showDeleteConfirmDialog(android.content.Context context, WatchItem item) {
         new AlertDialog.Builder(context)
                 .setTitle("Remove Item")
                 .setMessage("Are you sure you want to remove \"" + item.getTitle() + "\" from your library?")

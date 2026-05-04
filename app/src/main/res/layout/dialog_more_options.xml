@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="280dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="200dp"
     android:layout_height="wrap_content"
     android:background="@drawable/item_background_gradient"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="8dp">
 
     <TextView
         android:id="@+id/btnRemoveOption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/pill_plan"
-        android:gravity="center"
-        android:paddingVertical="12dp"
-        android:text="REMOVE FROM LIBRARY"
+        android:background="?attr/selectableItemBackground"
+        android:drawablePadding="12dp"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:text="Remove"
         android:textColor="@color/accent"
         android:textSize="14sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/pill_genre"
-        android:padding="12dp"
-        android:text="This logic has been globally updated for all matching media."
-        android:textColor="@color/text_primary"
-        android:textSize="12sp" />
+        android:textStyle="bold"
+        app:drawableStartCompat="@android:drawable/ic_menu_delete"
+        app:drawableTint="@color/accent" />
 
 </LinearLayout>
